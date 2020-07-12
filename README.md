@@ -3,6 +3,34 @@ This is documentation for analyzing data about Australian mines
 
 ![](img/australian_mines.svg)
 
+<details>
+  <summary>Markup for the model</summary>
+Markup for defining data model using the Arrows graph diagraming tool
+```
+<ul class="graph-diagram-markup" data-internal-scale="1.45" data-external-scale="1">
+  <li class="node" data-node-id="0" data-x="170.58362237338358" data-y="-373.75836181640625">
+    <span class="caption">State</span><dl class="properties"><dt>name</dt><dd>String</dd><dt>shortName</dt><dd>String&lt;3&gt;</dd></dl></li>
+  <li class="node" data-node-id="3" data-x="-390.9741100442819" data-y="-307.93059881802293">
+    <span class="caption">Mine</span><dl class="properties"><dt>id</dt><dd>Int</dd><dt>name</dt><dd>String</dd><dt>status</dt><dd>String</dd><dt>location</dt><dd>Coordinates</dd></dl></li>
+  <li class="node" data-node-id="4" data-x="374.19542089001914" data-y="50.68015052532327">
+    <span class="caption">Commodity</span><dl class="properties"><dt>name</dt><dd>String</dd></dl></li>
+  <li class="node" data-node-id="5" data-x="-428.21492688409234" data-y="94.45329468825771">
+    <span class="caption">Company</span><dl class="properties"><dt>name</dt><dd>String</dd><dt>listedAt</dt><dd>String</dd><dt>HQInCountry</dt><dd>String</dd></dl></li>
+  <li class="relationship" data-from="3" data-to="0">
+    <span class="type">IS_LOCATED_IN</span>
+  </li>
+  <li class="relationship" data-from="5" data-to="3">
+    <span class="type">OWNS</span><dl class="properties"><dt>percentage</dt><dd>Float</dd></dl></li>
+  <li class="relationship" data-from="3" data-to="4">
+    <span class="type">PRIMARY</span>
+  </li>
+  <li class="relationship" data-from="3" data-to="4">
+    <span class="type">SECONDARY</span>
+  </li>
+</ul>
+```
+</details>
+
 ## Where to get the data
 
 The mine and mineral data can be downloaded from AUSGIN Geoscience Portal at http://portal.geoscience.gov.au
@@ -69,3 +97,7 @@ MATCH (c:Company) WHERE c.name = "" DETACH DELETE c
 ```
 
 ## Sample queries with the data
+
+call db.schema.visualization
+
+
