@@ -1,6 +1,8 @@
 # AustralianMines
 This is documentation for analyzing data about Australian mines
 
+
+
 ## Where to get the data
 
 
@@ -15,4 +17,8 @@ Currently the following steps are done for the data downloaded from AUSGIN using
 * There are multiple items on certain cells on the following colums ("erl:owner", "erl:commodity"). There are quotation marks around those cells. Drop those. Also change the item delimiter in those cells from "," to ";"
 * There are both primary commodities and secondary products listed in column "erl:commodity". The secondary commodities are wrapped with parenthesis. Split the column in two using delimiter ";(". Name the first column to "PrimaryCommodities" and the second "SecondaryCommodities". Remove the trailing ")" from the column "SecondaryCommodities"
 
-Steps to import the CSV data to Neo4j
+## Steps to import the CSV data to Neo4j
+
+The following brute-force method of importing the data need polishing, but it gets the job done. I will work on improving the process.
+The assumption is that you have either Neo4j desktop client installed or you are using some online storage to host your Neo4j database. The prerequisite is that you have a running, emtpty instance of Neo4j database.
+1. Copy your csv-file to the Import-directory of your database
