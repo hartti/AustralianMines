@@ -64,3 +64,5 @@ FOREACH (ignoreMe in CASE WHEN exists(row["erl:owner"]) THEN [1] ELSE [] END | M
 MATCH (c:Commodity) WHERE c.name = "" DETACH DELETE c
 MATCH (c:Company) WHERE c.name = "" DETACH DELETE c
 ```
+
+## Sample queries with the data
