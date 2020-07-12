@@ -59,7 +59,8 @@ Currently the following steps are done for the data downloaded from AUSGIN using
 ## Steps to import the CSV data to Neo4j
 
 The following brute-force method of importing the data need polishing, but it gets the job done. I will work on improving the process.
-The assumption is that you have either Neo4j desktop client installed or you are using some online storage to host your Neo4j database. The prerequisite is that you have a running, emtpty instance of Neo4j database.
+The assumption is that you have either Neo4j desktop client installed or you are using some online storage to host your Neo4j database. The prerequisite is that you have a running, empty instance of Neo4j database, which also has APOC installed (for reverse geocoding).
+
 1. Copy your csv-file to the Import-directory of your database and name the file "output.csv"
 2. Create the mines
 ```
@@ -102,6 +103,11 @@ match (m:Mine) set m.longitude = toFloat(replace(SPLIT(m.location," ")[1],"(",""
 match (m:Mine) set m.latitude = toFloat(replace(SPLIT(m.location," ")[2],")",""))
 ```
 Fix Indexing
+
+8. Add state level geo coding with reverse geocoding
+```
+CALL apoc.spatial.reverseGeocode(-31.740950444496217,140.6623645096) YIELD description
+```
 
 ## Sample queries with the data
 
