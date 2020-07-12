@@ -5,6 +5,7 @@ This is documentation for analyzing data about Australian mines
 
 <details>
   <summary>Markup for the model</summary>
+  
 Markup for defining data model using the Arrows graph diagraming tool
 ```
 <ul class="graph-diagram-markup" data-internal-scale="1.45" data-external-scale="1">
