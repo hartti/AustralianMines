@@ -23,36 +23,37 @@ The following brute-force method of importing the data need polishing, but it ge
 The assumption is that you have either Neo4j desktop client installed or you are using some online storage to host your Neo4j database. The prerequisite is that you have a running, emtpty instance of Neo4j database.
 1. Copy your csv-file to the Import-directory of your database
 2. Create the mines
-
+```
 load csv with headers from 'file:///output.csv' as row
 with row
 merge (m:Mine {name: row["erl:name"], id: row["mineId"], status: row["erl:status"], location: row["erl:shape"], geology: row["erl:geologicHistory"]})
-
+```
 3. Create the primary production commodities and the relationships
-
+```
 load csv with headers from 'file:///output.csv' as row
 with row, split(row.PrimaryCommodities, ";") as primaries
 unwind primaries as primary
 match (m:Mine) where m.id = row.mineId
 FOREACH (ignoreMe in CASE WHEN exists(row.PrimaryCommodities) THEN [1] ELSE [] END | MERGE (c:Commodity {name:primary}) merge (m)-[:PRIMARY]->(c))
-
+```
 4. Create the secondary production commoditions and the relationships
-
+```
 load csv with headers from 'file:///output.csv' as row
 with row, split(row.PrimaryCommodities, ";") as primaries
 unwind primaries as primary
 match (m:Mine) where m.id = row.mineId
 FOREACH (ignoreMe in CASE WHEN exists(row.PrimaryCommodities) THEN [1] ELSE [] END | MERGE (c:Commodity {name:primary}) merge (m)-[:PRIMARY]->(c))
-
+```
 5. Create the companies and ownership relations
-
+```
 load csv with headers from 'file:///output.csv' as row
 with row, split(row["erl:owner"] , ";") as owners
 unwind owners as owner
 match (m:Mine) where m.id = row.mineId
 FOREACH (ignoreMe in CASE WHEN exists(row["erl:owner"]) THEN [1] ELSE [] END | MERGE (c:Company {name:owner}) merge (c)-[:OWNS]->(m))
-
+```
 6. The previous three statements created a Commodity and Company node with no name. Delete those entities (and the relationships they have)
-
+```
 match (c:Commodity) where c.name = "" detach delete c
 match (c:Company) where c.name = "" detach delete c
+```
