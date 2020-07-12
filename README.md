@@ -96,9 +96,39 @@ FOREACH (ignoreMe in CASE WHEN exists(row["erl:owner"]) THEN [1] ELSE [] END | M
 MATCH (c:Commodity) WHERE c.name = "" DETACH DELETE c
 MATCH (c:Company) WHERE c.name = "" DETACH DELETE c
 ```
+7. Fix issues which need to handle earlier (latitude longitude)
+```
+match (m:Mine) set m.longitude = toFloat(replace(SPLIT(m.location," ")[1],"(",""))
+match (m:Mine) set m.latitude = toFloat(replace(SPLIT(m.location," ")[2],")",""))
+```
+Fix Indexing
 
 ## Sample queries with the data
 
+See the current schem of the data
+```
 call db.schema.visualization
+```
 
+Return all mines which do not have any owners listed
+```
+MATCH (m:Mine) WHERE NOT (m)-[]-(:Company) RETURN m
+```
 
+Return a list of mines with more than one owner (ordered by owner count - desconding)
+```
+MATCH (:Company)-[r]->(m:Mine)
+WITH m, count(r) as Owner_count
+WHERE Owner_count > 1
+RETURN m.name, Owner_count
+ORDER BY Owner_count DESC
+```
+
+Return a list of companies which own more than one mine (and the count of owned mines) ordered by descencing count of owned mindes 
+```
+MATCH (c:Company)-[r]->(:Mine)
+WITH c, count(r) as Mine_count
+WHERE Mine_count > 1
+RETURN c.name, Mine_count
+ORDER BY Mine_count DESC
+```
