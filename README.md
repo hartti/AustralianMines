@@ -6,7 +6,7 @@ This is documentation for analyzing data about Australian mines
 <details>
   <summary>Markup for the model</summary>
   
-Markup for defining data model using the Arrows graph diagraming tool
+Markup for defining data model using the Arrows graph diagraming tool at http://www.apcjones.com/arrows/#
 ```
 <ul class="graph-diagram-markup" data-internal-scale="1.45" data-external-scale="1">
   <li class="node" data-node-id="0" data-x="170.58362237338358" data-y="-373.75836181640625">
