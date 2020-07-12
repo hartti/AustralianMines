@@ -6,12 +6,15 @@ This is documentation for analyzing data about Australian mines
 ## Where to get the data
 
 The mine and mineral data can be downloaded from AUSGIN Geoscience Portal at http://portal.geoscience.gov.au
+
 The mine data can be found by choosing "Add Data" then under "Mines and Mining Activity" select "Mines (new version)", select only "Geoscience Australia" and download the data
+
 The mineral data can be found by choosing "Add Data" then under "Mineral Occurrences and Resources", select "Mineral Occurrences (new version), select only "Geoscience Australia" and download the data.
 
-What about production data
-The state data
-The company data
+Other datasets?
+* commodity production data
+* state boundary data
+* details about the companies
 
 ## Steps to prepare the data for Neo4j
 
