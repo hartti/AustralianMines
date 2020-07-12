@@ -132,3 +132,11 @@ WHERE Mine_count > 1
 RETURN c.name, Mine_count
 ORDER BY Mine_count DESC
 ```
+
+Return a list of minerals / commodities produced by "Cameco Corporation"
+```
+MATCH (c:Company)-[]->(:Mine)-[]->(m:Commodity)
+WHERE c.name = "Cameco Corporation"
+RETURN DISTINCT m.name
+ORDER BY m.name
+```
