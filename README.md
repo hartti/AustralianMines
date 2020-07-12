@@ -1,7 +1,7 @@
 # AustralianMines
 This is documentation for analyzing data about Australian mines
 
-
+![](img/australian_mines.svg)
 
 ## Where to get the data
 
