@@ -105,8 +105,17 @@ match (m:Mine) set m.latitude = toFloat(replace(SPLIT(m.location," ")[2],")","")
 Fix Indexing
 
 8. Add state level geo coding with reverse geocoding
+
+This section is slightly problematic as the free reverse geocoding service (Open Street Map) used by Neo4j by default does not provide accurate or consistent enough information against the given latitude and longitude information. The Google Geocoding service works much better (giving consistenly responses in the form "<optional street address,> <City StateAbbreviation ZIP>, Australia", but there is a cost involved and also the set-up requires configuration both for Neo4j as well as for Google services.
 ```
 CALL apoc.spatial.reverseGeocode(-31.740950444496217,140.6623645096) YIELD description
+
+// this query takes long time
+MATCH (m:Mine)
+WITH m
+CALL apoc.spatial.reverseGeocode(m.latitude, m.longitude) YIELD description
+SET m.locationString = description
+
 ```
 
 ## Sample queries with the data
