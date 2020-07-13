@@ -118,6 +118,12 @@ SET m.locationString = description
 
 ```
 
+match (m:Mine) with m, substring(m.locationString, 0, size(m.locationString)-11) as testStr
+with m, right(testStr, 4) as zip, trim(substring(testStr, size(testStr)-8, 3)) as state
+match (s:State) where s.id = state
+merge (m)-[:LOCATED_IN]->(s)
+
+
 ## Sample queries with the data
 
 See the current schem of the data
