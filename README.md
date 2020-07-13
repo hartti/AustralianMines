@@ -106,11 +106,11 @@ Fix Indexing
 
 8. Add state level geo coding with reverse geocoding
 
-This section is slightly problematic as the free reverse geocoding service (Open Street Map) used by Neo4j by default does not provide accurate or consistent enough information against the given latitude and longitude information. The Google Geocoding service works much better (giving consistenly responses in the form "<optional street address,> <City StateAbbreviation ZIP>, Australia", but there is a cost involved and also the set-up requires configuration both for Neo4j as well as for Google services.
+This section is slightly problematic as the free reverse geocoding service (Open Street Map) used by Neo4j by default does not provide accurate or consistent enough information against the given latitude and longitude information. The Google Geocoding service works much better (giving very consistenly responses in the form "<optional street address,> <City StateAbbreviation ZIP>, Australia", but there is a cost involved and also the set-up requires configuration both for Neo4j as well as for Google services. There are also handful of results (5) which produce non-consistent location descriptions. These can be fixed manually.
 ```
 CALL apoc.spatial.reverseGeocode(-31.740950444496217,140.6623645096) YIELD description
 
-// this query takes long time
+// this query takes very long time with Open Street Map as there is by default a significant time interval between requests
 MATCH (m:Mine)
 WITH m
 CALL apoc.spatial.reverseGeocode(m.latitude, m.longitude) YIELD description
@@ -126,7 +126,7 @@ merge (m)-[:LOCATED_IN]->(s)
 
 ## Sample queries with the data
 
-See the current schem of the data
+See the current schema of the data
 ```
 call db.schema.visualization
 ```
@@ -160,4 +160,18 @@ MATCH (c:Company)-[]->(:Mine)-[]->(m:Commodity)
 WHERE c.name = "Cameco Corporation"
 RETURN DISTINCT m.name
 ORDER BY m.name
+```
+
+Return operating mines producing Uranium with location state and owners
+```
+match (m:Mine)-[r1:LOCATED_IN]->(s:State), (m)-[]->(c:Commodity), (co:Company)-[r2]-(m)
+where c.name = "Uranium" and m.status = "operating mine"
+return m,r1,r2,s,co
+```
+
+Return mines mining gold located in NSW and QLD with owners
+```
+match (m:Mine)-[r1:LOCATED_IN]->(s:State), (m)-[]->(c:Commodity), (co:Company)-[r2]-(m)
+where s.id IN ["QLD","NSW"] and c.name = "Gold"
+return m,r1,r2,s,co
 ```
