@@ -51,10 +51,13 @@ Currently the following steps are done for the data downloaded from AUSGIN using
 
 ### Steps needed:
 * There are a few special cases which need to be fixed so that the batch processes in the following steps do not create new problems
-    * Test
+    * In erl:name (mine name) replace "( " with "(" (cosmetic change)
+    * In erl:owner (owner names) replace ", Ltd" with " Ltd"
+    * In erl:owner (owner names) replace ", Australia" with " Australia"
+    * In erl:owner (owner names) replace " ," with ","
 * From both data sets, create a new id column by extracting 6-digit id from column "gml:id". This id is more reliable for joining the data sets than the mine names (note that there are total of 3 columns listing the mine name in these two files: erl:name in one and erl:name and erl:mineName in the other)
 * Join the two datasets to a single file using the id-key generated above. There are plenty of empty colums and duplicate columms, which can be dropped
-* There are a lot rows which are not that interesting for mine analysis. Use column erl:status to drop such rows ("historic mine" and "mineral deposit") - this will remove roughly 3500 rows from the data set leaving a little over 500 rows
+* There are a lot rows which are not that interesting for mine analysis. Use column erl:status to drop such rows ("historic mine" and "mineral deposit" are the most important ones to dop, but I would also let go of "feasibility", "pending approval", "under development" and "closed") - this will remove roughly 3500 rows from the data set leaving a little over 400 rows (360+ operating mines, 60+ in care and maintenance and a couple in construction.
 * There are multiple items on certain cells on the following colums ("erl:owner", "erl:commodity"). There are quotation marks around those cells. Drop those. Also change the item delimiter in those cells from "," to ";"
 * There are both primary commodities and secondary products listed in column "erl:commodity". The secondary commodities are wrapped with parenthesis. Split the column in two using delimiter ";(". Name the first column to "PrimaryCommodities" and the second "SecondaryCommodities". Remove the trailing ")" from the column "SecondaryCommodities"
 
@@ -99,6 +102,8 @@ FOREACH (ignoreMe in CASE WHEN exists(row["erl:owner"]) THEN [1] ELSE [] END | M
 MATCH (c:Commodity) WHERE c.name = "" DETACH DELETE c
 MATCH (c:Company) WHERE c.name = "" DETACH DELETE c
 ```
+Note that there is now 110+ mines without ownership information
+
 7. Fix issues which need to handle earlier (latitude longitude)
 ```
 match (m:Mine) set m.longitude = toFloat(replace(SPLIT(m.location," ")[1],"(",""))
