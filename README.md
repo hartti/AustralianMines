@@ -1,5 +1,41 @@
 # AustralianMines
-This is documentation for analyzing data about Australian mines
+This is documentation for analyzing data about Australian mines.
+
+## Version 2
+
+There has been improvements in the Australian mining data in the past few years. At this point the data can be downloaded from this Mine Map https://portal.ga.gov.au/persona/minesatlas and imported in to a Neo4J database with the following code instead of preprocessing the data for import.
+
+```
+load csv with headers from "https://services.ga.gov.au/gis/earthresource/wfs?request=GetFeature&service=WFS&version=1.1.0&typeName=ama:MineralDeposits&outputFormat=csv" as row
+    with row, coalesce(row.STATE, "N/A") as state
+    where row.OPERATING_STATUS = "operating mine"
+        merge (s:State {code: state})
+        merge (m:Mine {name: row.DEPOSIT_NAME, lat: toFloat(row.LAT_GDA94), lon: toFloat(row.LONG_GDA94), eno: row.ENO})
+        merge (m)-[:isLocatedIn]->(s)
+        with m, split(trim(")" from row.COMMODITY_CODES),"(") as commodities_lists, split(row.COMPANIES, ", ") as companies, split(row.COMPANY_WEBSITES, ", ") as websites
+        with m, commodities_lists, split(commodities_lists[0],",") as main_commodities, companies, websites
+        unwind companies as co
+        merge (c:Company {name: co})
+        merge (c)-[:Owns]->(m)
+        with m, main_commodities, commodities_lists
+        unwind main_commodities as mc_raw
+        with m, trim(mc_raw) as mc, commodities_lists
+        where mc <> ""
+            merge (n:Commodity {code: trim(mc)})
+            merge (m)-[:Produces]->(n)
+        with m, split(commodities_lists[1],",") as secondary_commodities
+        unwind secondary_commodities as sc_raw
+        with m, trim(sc_raw) as sc
+        where sc <> ""
+            merge (n:Commodity {code: trim(sc)})
+            merge (m)-[:HasTraces]->(n)
+```
+There are some areas which can be improved including:
+- Commodity name could be added to the Commodity node (in addition to the code) - note, that the COMMODITY NAME column contains data formatted slightly differently than in the COMMODITY CODE column
+- Company website could be added to the Company node
+
+
+## Version 1 
 
 ![](img/australian_mines.svg)
 
