@@ -30,6 +30,20 @@ load csv with headers from "https://services.ga.gov.au/gis/earthresource/wfs?req
             merge (n:Commodity {code: trim(sc)})
             merge (m)-[:HasTraces]->(n)
 ```
+
+Although there are still some minor issues in the data, so to clean it run these commands as well
+
+This on is to remove an additional "company" named "Ltd" incorrectly created due to a misplaced comma in the COMPANIES column
+
+```
+match (c:Company {name: "China Molybdenum Co."})
+set c.name = "China Molybdenum Co. Ltd"
+
+match (c:Company {name: "Ltd"})
+detach delete c
+
+```
+
 There are some areas which can be improved including:
 - Commodity name could be added to the Commodity node (in addition to the code) - note, that the COMMODITY NAME column contains data formatted slightly differently than in the COMMODITY CODE column
 - Company website could be added to the Company node
